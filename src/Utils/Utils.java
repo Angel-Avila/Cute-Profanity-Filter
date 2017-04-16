@@ -76,4 +76,17 @@ public class Utils {
 
         return stringBuffer.toString();
     }
+
+    public static String toLetter(String number) {
+        switch (number) {
+            case "0": return "o";
+            case "1": return "i";
+            case "3": return "e";
+            case "4": return "a";
+            case "5": return "s";
+            case "7": return "t";
+            default: return "";
+        }
+    }
+
 }

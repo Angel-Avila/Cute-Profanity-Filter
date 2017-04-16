@@ -1,12 +1,14 @@
 package View;
 
+import Controller.ProfanityChecker;
+import Controller.State;
+import Model.Profanity;
 import Utils.Utils;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -24,6 +26,29 @@ public class UIMainView {
 
     public static void display(Stage primaryStage) {
         Stage window;
+
+        File curDir = new File("ProfanityList.txt");
+        System.out.println(Utils.readFile(curDir));
+
+        String b = "1";
+        String a = Character.toString(b.charAt(0));
+        System.out.println(a.matches("[aeiou]"));
+        System.out.println(a.matches("[a-z0-9]"));
+        System.out.println(a.matches("[^aeiou]"));
+
+        Profanity fuck = new Profanity("fuck", 0);
+        int i = 0;
+        String testWord = "fuuuucka";
+        while(i < testWord.length()) {
+
+            fuck.next(Character.toString(testWord.charAt(i)));
+
+            System.out.println("Letter: " + testWord.charAt(i) + ", Index: " + fuck.currentIx);
+
+            i++;
+        }
+
+        System.out.println(fuck.state);
 
         window = primaryStage;
         window.setTitle("Cute Profanity Filter");
@@ -64,11 +89,15 @@ public class UIMainView {
 
             if(file != null) {
 
-                String t = Utils.getShortenedDir(file.getAbsolutePath());
+                String dir = Utils.getShortenedDir(file.getAbsolutePath());
 
-                fileDirLbl.setText(t);
+                fileDirLbl.setText(dir);
 
-                filteredTextTA.setText(Utils.getTAFormattedString(Utils.readFile(file)));
+                String text = Utils.readFile(file)/*.replaceAll("[^A-Za-z\\s]+", "")*/;
+
+                ProfanityChecker.getInstance().unfilteredText = text;
+
+                filteredTextTA.setText(Utils.getTAFormattedString(text));
             }
 
         });
@@ -77,6 +106,16 @@ public class UIMainView {
 
         filterTextBtn.setOnAction(e -> {
 
+            StringBuilder text = new StringBuilder(ProfanityChecker.getInstance().unfilteredText);
+
+            while(ProfanityChecker.getInstance().index < text.length()) {
+                String letter = Character.toString(text.charAt(ProfanityChecker.getInstance().index));
+
+                if (letter.matches("[A-Za-z0-9]")) {
+                    ProfanityChecker.getInstance().check(text, letter.toLowerCase());
+                }
+
+            }
         });
 
         // MARK: - Layout
