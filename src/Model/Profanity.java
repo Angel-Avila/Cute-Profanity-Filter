@@ -22,19 +22,30 @@ public class Profanity {
         state = State.CHECKING;
     }
 
-    public void next(String letter) {
+    public void next(String letter, int textIx) {
         // These numbers can sometimes be used in text to replace characters; e.g., "H3ll0" can be read as "Hello"
         if(letter.matches("[013457]"))
             letter = Utils.toLetter(letter);
 
+        if(word.equals("bitch"))
+            System.out.println();
+
         // We passed the same letter, this condition is so the profanity filter recognizes a word like "heeeeello" as "hello"
-        if (letter.charAt(0) == word.charAt(currentIx))
+        if (letter.charAt(0) == word.charAt(currentIx)) {
+            if(word.length() != currentIx + 1)
+                if(word.charAt(currentIx + 1) == word.charAt(currentIx))
+                    currentIx++;
             return;
+        }
 
         // This means the word and repetitions of the last letter are over and we are encountering a new word
         // e.g., we were checking  a text with "...hellooooo friend..." and now we're being passed the "f"
         if(word.length() == currentIx + 1) {
+            if(state != State.FINAL0)
+                endIx = textIx;
+
             state = State.FINAL;
+
             return;
         }
 
@@ -47,8 +58,9 @@ public class Profanity {
 
         // If it came here, it's because the letter we are checking IS the same as the one we are checking in our profanity
         // and if we are at the very end of the profanity, it is finished, but we are looking for repetitions of the last letter
-        else if(word.length() == currentIx + 1)
+        else if(word.length() == currentIx + 1) {
             state = State.FINAL0;
+            endIx = textIx + 1;
+        }
     }
-
 }

@@ -4,4 +4,5 @@ asshole,
 idiot,
 imbecile,
 fuck,
-cunt
+cunt,
+stupid

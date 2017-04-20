@@ -1,8 +1,6 @@
 package View;
 
 import Controller.ProfanityChecker;
-import Controller.State;
-import Model.Profanity;
 import Utils.Utils;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -26,29 +24,6 @@ public class UIMainView {
 
     public static void display(Stage primaryStage) {
         Stage window;
-
-        File curDir = new File("ProfanityList.txt");
-        System.out.println(Utils.readFile(curDir));
-
-        String b = "1";
-        String a = Character.toString(b.charAt(0));
-        System.out.println(a.matches("[aeiou]"));
-        System.out.println(a.matches("[a-z0-9]"));
-        System.out.println(a.matches("[^aeiou]"));
-
-        Profanity fuck = new Profanity("fuck", 0);
-        int i = 0;
-        String testWord = "fuuuucka";
-        while(i < testWord.length()) {
-
-            fuck.next(Character.toString(testWord.charAt(i)));
-
-            System.out.println("Letter: " + testWord.charAt(i) + ", Index: " + fuck.currentIx);
-
-            i++;
-        }
-
-        System.out.println(fuck.state);
 
         window = primaryStage;
         window.setTitle("Cute Profanity Filter");
@@ -106,16 +81,21 @@ public class UIMainView {
 
         filterTextBtn.setOnAction(e -> {
 
-            StringBuilder text = new StringBuilder(ProfanityChecker.getInstance().unfilteredText);
+            ProfanityChecker instance = ProfanityChecker.getInstance();
+            StringBuilder text = new StringBuilder(instance.unfilteredText);
 
-            while(ProfanityChecker.getInstance().index < text.length()) {
-                String letter = Character.toString(text.charAt(ProfanityChecker.getInstance().index));
+            while(instance.index < text.length()) {
+                String letter = Character.toString(text.charAt(instance.index));
 
-                if (letter.matches("[A-Za-z0-9]")) {
-                    ProfanityChecker.getInstance().check(text, letter.toLowerCase());
-                }
-
+                if (letter.matches("[A-Za-z0-9]"))
+                    instance.check(text, letter.toLowerCase());
+                else
+                    instance.index++;
             }
+
+            instance.cleanPossibleProfanities(text);
+
+            filteredTextTA.setText(Utils.getTAFormattedString(text.toString()));
         });
 
         // MARK: - Layout
