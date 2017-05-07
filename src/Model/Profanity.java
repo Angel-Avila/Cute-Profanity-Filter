@@ -23,14 +23,11 @@ public class Profanity {
     }
 
     public void next(String letter, int textIx) {
-        // These numbers can sometimes be used in text to replace characters; e.g., "H3ll0" can be read as "Hello"
+        // These numbers can sometimes be used in text to replace characters; e.g., "H3ll0" can be read as "Hello", so we switch them for their equivalent
         if(letter.matches("[013457]"))
             letter = Utils.toLetter(letter);
 
-        if(word.equals("bitch"))
-            System.out.println();
-
-        // We passed the same letter, this condition is so the profanity filter recognizes a word like "heeeeello" as "hello"
+        // We passed the same letter as before, this condition is so the profanity filter recognizes a word like "heeeeello" as "hello"
         if (letter.charAt(0) == word.charAt(currentIx)) {
             if(word.length() != currentIx + 1)
                 if(word.charAt(currentIx + 1) == word.charAt(currentIx))
@@ -38,7 +35,7 @@ public class Profanity {
             return;
         }
 
-        // This means the word and repetitions of the last letter are over and we are encountering a new word
+        // If our index is at the end of the word it means the word and repetitions of the last letter are over and we are encountering a new word
         // e.g., we were checking  a text with "...hellooooo friend..." and now we're being passed the "f"
         if(word.length() == currentIx + 1) {
             if(state != State.FINAL0)

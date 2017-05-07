@@ -70,7 +70,7 @@ public class UIMainView {
 
                 String text = Utils.readFile(file)/*.replaceAll("[^A-Za-z\\s]+", "")*/;
 
-                ProfanityChecker.getInstance().unfilteredText = text;
+                ProfanityChecker.getInstance().unfilteredText = new StringBuilder(text);
 
                 filteredTextTA.setText(Utils.getTAFormattedString(text));
             }
@@ -118,5 +118,4 @@ public class UIMainView {
         window.setResizable(false);
         window.show();
     }
-
 }
